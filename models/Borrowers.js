@@ -1,23 +1,24 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const BorrowerSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    address: {
-        type: String,
-    },
-    contact: {
-        type: String,
-    },
-    aadhar: {
-        type: String,
-        required: true
-    },
-    occupation: {
-        type: String,
-    },
+  name: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: String,
+  },
+  contact: {
+    type: String,
+  },
+  aadhar: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  occupation: {
+    type: String,
+  },
 });
 
-module.exports = mongoose.model('Borrower', BorrowerSchema);
+module.exports = mongoose.model("Borrower", BorrowerSchema);
