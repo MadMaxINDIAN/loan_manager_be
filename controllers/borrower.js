@@ -1,17 +1,19 @@
 const Borrower = require("../models/Borrowers");
 const { validationResult } = require("express-validator");
+const response = require("../constants/response");
 
 exports.addBorrower = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res
-      .status(422)
-      .json({ message: "Validation failed", data: errors.array() });
+      .status(response.errors.VALIDATION_ERROR.status)
+      .json({ message: response.errors.VALIDATION_ERROR.message, data: errors.array() });
   }
   Borrower.findOne({ aadhar: req.body.aadhar }).then((borr) => {
     if (borr) {
-      return res.status(400).json({
-        message: "Aadhar number already exists",
+      return res.status(response.errors.VALIDATION_ERROR.status).json({
+        message: response.errors.VALIDATION_ERROR.message,
+        errors: {message: "Aadhar number already exists"},
       });
     }
     const borrower = new Borrower({
@@ -23,10 +25,9 @@ exports.addBorrower = (req, res) => {
     });
     borrower.save((err, borrower) => {
       if (err) {
-        return res.status(500).json({
-          message:
-            err.message || "Some error occurred while creating the borrower.",
-        });
+        return res
+        .status(response.errors.INTERNAL_SERVER_ERROR.status)
+        .json({ message: response.errors.INTERNAL_SERVER_ERROR.message });
       } else {
         return res.json({ message: "Borrower added", borrower });
       }

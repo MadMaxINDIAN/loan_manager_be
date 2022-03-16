@@ -1,6 +1,7 @@
 const Loan = require("../models/Loan");
 const Transaction = require("../models/Transaction");
 const { validationResult } = require("express-validator");
+const response = require("../constants/response");
 
 exports.addTransaction = (req, res) => {
   const errors = validationResult(req);
@@ -11,7 +12,9 @@ exports.addTransaction = (req, res) => {
   const { amount, day } = req.body;
   Loan.findById(id, (err, loan) => {
     if (err) {
-      res.status(500).json({ message: "Loan account doesn't exist" });
+      return res.status(response.errors.INTERNAL_SERVER_ERROR.status).json({
+        message: response.errors.INTERNAL_SERVER_ERROR.message
+      });
     } else {
       loan.payments[day] = amount;
       loan.amount_to_be_paid -= amount;
@@ -22,9 +25,9 @@ exports.addTransaction = (req, res) => {
         });
         transaction.save((err, transaction) => {
           if (err) {
-            res
-              .status(500)
-              .json({ message: err.message || "Some error occured", err });
+            res.status(response.errors.INTERNAL_SERVER_ERROR.status).json({
+              message: response.errors.INTERNAL_SERVER_ERROR.message
+            });
           } else {
             res.status(200).json({
               message: "Transaction done successfully",

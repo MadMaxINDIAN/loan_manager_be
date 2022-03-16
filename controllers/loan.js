@@ -1,22 +1,27 @@
 const Loan = require("../models/Loan");
 const Borrower = require("../models/Borrowers");
 const { validationResult } = require("express-validator");
+const response = require("../constants/response");
 
 exports.addLoan = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res
-      .status(422)
-      .json({ message: "Validation failed", data: errors.array() });
+    .status(response.errors.VALIDATION_ERROR.status)
+    .json({ message: response.errors.VALIDATION_ERROR.message, data: errors.array() });
   }
   Borrower.findById(req.body.borrower_id).then((borrower) => {
     if (!borrower) {
-      return res.status(404).json({ message: "Borrower not found" });
+      return res.status(response.errors.NOT_FOUND.status).json({
+        message: response.errors.NOT_FOUND.message,
+        errors: {message: "Borrower not found"},
+      });
     }
     Loan.findOne({ sr_no: req.body.sr_no }).then((lon) => {
       if (lon) {
-        return res.status(400).json({
-          message: "SR No already exists",
+        return res.status(response.errors.VALIDATION_ERROR.status).json({
+          message: response.errors.VALIDATION_ERROR.message,
+          errors: {message: "sr_no already exists"},
         });
       }
       const daily = (req.body.loan_amount * 1.2) / 60;
@@ -37,9 +42,8 @@ exports.addLoan = (req, res) => {
       });
       loan.save((err, loan) => {
         if (err) {
-          return res.status(500).json({
-            message:
-              err.message || "Some error occurred while creating the loan.",
+          return res.status(response.errors.INTERNAL_SERVER_ERROR.status).json({
+            message: response.errors.INTERNAL_SERVER_ERROR.message
           });
         } else {
           return res.json({ message: "Loan accout created", loan });
