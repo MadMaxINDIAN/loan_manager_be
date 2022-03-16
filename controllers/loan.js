@@ -34,6 +34,7 @@ exports.addLoan = (req, res) => {
         amount_to_be_paid: amount_to_be_paid,
         daily_payment: daily,
         payments: payments,
+        opening_date: req.body.opening_date,
       });
       loan.save((err, loan) => {
         if (err) {
