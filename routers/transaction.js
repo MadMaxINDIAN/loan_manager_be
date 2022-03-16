@@ -1,27 +1,14 @@
 const router = require("express").Router();
-const Loan = require("../models/Loan");
+const transactionController = require("../controllers/transaction");
+const { body } = require("express-validator");
 
 // URL: /transaction/:id/add
 // Method: POST
 // Description: Add a transaction
-router.post("/:id/add", (req, res) => {
-    const id = req.params.id;
-    const { amount, day } = req.body;
-    Loan.findById(id, (err, loan) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            loan.payments[day] = amount;
-            loan.amount_to_be_paid -= amount;
-            loan.save((err, loan) => {
-                if (err) {
-                    res.status(500).send(err);
-                } else {
-                    res.status(200).send(loan);
-                }
-            });
-        }
-    });
-})
+router.post(
+  "/:id/add",
+  [body("amount").isNumeric().withMessage("Amount must be a number")],
+  transactionController.addTransaction
+);
 
 module.exports = router;
