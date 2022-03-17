@@ -34,3 +34,20 @@ exports.addBorrower = (req, res) => {
     });
   });
 };
+
+exports.getBorrowers = (req, res) => {
+  const name = req.query.search;
+  Borrower.find({ name: { $regex: name, $options: "i" } })
+    .then((borrowers) => {
+      if (!borrowers) {
+        return res.status(404).json({ message: "Borrowers not found" });
+      }
+      return res.json({ message: "Borrowers found", borrowers });
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        message:
+          err.message || "Some error occurred while retrieving borrowers.",
+      });
+    });
+};
