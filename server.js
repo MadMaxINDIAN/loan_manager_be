@@ -4,11 +4,13 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const morgan = require("morgan");
 
 // creating an express app
 const app = express();
 
 // configuring app
+app.use(morgan("dev"));
 app.use(cors());
 dotenv.config();
 app.use(express.json());
