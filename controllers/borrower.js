@@ -10,8 +10,9 @@ exports.addBorrower = (req, res) => {
   }
   Borrower.findOne({ aadhar: req.body.aadhar }).then((borr) => {
     if (borr) {
-      return res.status(400).json({
-        message: "Aadhar number already exists",
+      return res.status(200).json({
+        message: "Borrowe found",
+        borrower: borr,
       });
     }
     const borrower = new Borrower({
