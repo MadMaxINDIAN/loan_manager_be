@@ -31,4 +31,9 @@ router.post(
 // Description: Get all borrowers
 router.get("/get", borrowerController.getBorrowers);
 
+// URL: /borrower/get/:id
+// Method: GET
+// Description: Get a borrower
+router.get("/get/:id", borrowerController.getBorrower);
+
 module.exports = router;

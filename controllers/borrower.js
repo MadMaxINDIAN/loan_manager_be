@@ -1,5 +1,6 @@
 const Borrower = require("../models/Borrowers");
 const { validationResult } = require("express-validator");
+const Loan = require("../models/Loan");
 
 exports.addBorrower = (req, res) => {
   const errors = validationResult(req);
@@ -48,6 +49,28 @@ exports.getBorrowers = (req, res) => {
       return res.status(500).json({
         message:
           err.message || "Some error occurred while retrieving borrowers.",
+      });
+    });
+};
+
+exports.getBorrower = (req, res) => {
+  const id = req.params.id;
+  Borrower.findById(id)
+    .then((borrower) => {
+      if (!borrower) {
+        return res.status(404).json({ message: "Borrower not found" });
+      }
+      return Loan.find({ borrower_id: id }).then((loans) => {
+        if (!loans) {
+          return res.status(404).json({ message: "Loans not found" });
+        }
+        return res.json({ message: "Borrower found", borrower, loans });
+      });
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        message:
+          err.message || "Some error occurred while retrieving borrower.",
       });
     });
 };
