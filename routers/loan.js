@@ -14,4 +14,9 @@ router.post(
   loanController.addLoan
 );
 
+// URL: /loan/get
+// Method: GET
+// Description: Get all loan accounts
+router.get("/get", loanController.getAllLoans);
+
 module.exports = router;

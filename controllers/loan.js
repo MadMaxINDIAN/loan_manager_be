@@ -49,3 +49,19 @@ exports.addLoan = (req, res) => {
     });
   });
 };
+
+exports.getAllLoans = (req, res) => {
+  Loan.find({})
+    .populate("borrower_id")
+    .then((loans) => {
+      if (!loans) {
+        return res.status(404).json({ message: "Loans not found" });
+      }
+      return res.json({ message: "Loans found", loans });
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        message: err.message || "Some error occurred while retrieving loans.",
+      });
+    });
+};
