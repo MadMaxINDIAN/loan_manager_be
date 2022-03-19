@@ -2,6 +2,22 @@ const Borrower = require("../models/Borrowers");
 const { validationResult } = require("express-validator");
 const Loan = require("../models/Loan");
 
+exports.getTotalLoanAccounts = (req, res) => {
+  Loan.find({})
+    .then((loans) => {
+      res.json({
+        success: true,
+        loans: loans.length,
+      });
+    })
+    .catch((err) => {
+      res.json({
+        success: false,
+        message: err.message,
+      });
+    });
+}
+
 exports.addBorrower = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

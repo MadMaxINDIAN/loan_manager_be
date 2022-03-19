@@ -36,4 +36,9 @@ router.get("/get", borrowerController.getBorrowers);
 // Description: Get a borrower
 router.get("/get/:id", borrowerController.getBorrower);
 
+// URL: /borrower/total_loan_accounts
+// Method: GET
+// Description: Get total loan accounts of all borrowers
+router.get("/total_loan_accounts", borrowerController.getTotalLoanAccounts);
+
 module.exports = router;
