@@ -39,9 +39,10 @@ exports.addBorrower = (req, res) => {
 exports.getBorrowers = (req, res) => {
   const name = req.query.search;
   Borrower.find({ name: { $regex: name, $options: "i" } })
+    .limit(10)
     .then((borrowers) => {
       if (!borrowers) {
-        return res.status(404).json({ message: "Borrowers not found" });
+        return res.json({ message: "Borrowers not found", borrowers: [] });
       }
       return res.json({ message: "Borrowers found", borrowers });
     })
