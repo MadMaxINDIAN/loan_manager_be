@@ -8,7 +8,8 @@ exports.addTransaction = (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   const id = req.params.id;
-  const { amount, date } = req.body;
+  let { amount, date } = req.body;
+  date = new Date(date);
   Loan.findById(id, (err, loan) => {
     if (err) {
       res.status(500).json({ message: "Loan account doesn't exist" });
@@ -22,9 +23,11 @@ exports.addTransaction = (req, res) => {
         const transaction = new Transaction({
           amount: amount,
           loan_account_id: id,
+          date
         });
         transaction.save((err, transaction) => {
           if (err) {
+            console.log(err);
             res
               .status(500)
               .json({ message: err.message || "Some error occured", err });
