@@ -3,6 +3,12 @@ const Loan = require("../models/Loan");
 const Summary = require("../models/Summary");
 const Transaction = require("../models/Transaction");
 
+Date.prototype.addDays = function (days) {
+  var date = new Date(this.valueOf());
+  date.setDate(date.getDate() + days);
+  return date;
+};
+
 // URL: /summary
 // Method: GET
 // Description: Get total loan accounts of all borrowers
@@ -47,32 +53,22 @@ router.get("/", async (req, res) => {
 router.post("/daily", async (req, res) => {
   try {
     const { date } = req.body;
-    const loans = await Loan.find({});
-    let total_investment = 0;
-    loans.map((loan) => {
-      if (
-        loan.opening_date.getDate() === new Date(date).getDate() &&
-        loan.opening_date.getMonth() === new Date(date).getMonth() &&
-        loan.opening_date.getFullYear() === new Date(date).getFullYear()
-      ) {
-        total_investment += +loan.loan_amount;
-      }
-    });
-    const transactions = await Transaction.find({});
-    let total_taken = 0;
-    transactions.map((transaction) => {
-      if (
-        transaction.date.getDate() === new Date(date).getDate() &&
-        transaction.date.getMonth() === new Date(date).getMonth() &&
-        transaction.date.getFullYear() === new Date(date).getFullYear()
-      ) {
-        total_taken += +transaction.amount;
-      }
-    });
+    const lb = new Date(date.substring(0, 10));
+    const ub = lb.addDays(1);
+    const result = await Loan.aggregate([
+      { $match: { opening_date: { $gte: lb, $lt: ub } } },
+      { $group: { _id: null, total: { $sum: "$loan_amount" } } },
+    ]);
+    const total_investment = result[0]?.total || 0;
+    const result2 = await Transaction.aggregate([
+      { $match: { date: { $gte: lb, $lt: ub } } },
+      { $group: { _id: null, total: { $sum: "$amount" } } },
+    ]);
+    const total_received = result2[0]?.total || 0;
     return res.json({
       message: "Summary found",
       total_investment,
-      total_taken,
+      total_received,
     });
   } catch (err) {
     return res.status(500).json({
