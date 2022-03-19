@@ -5,6 +5,11 @@ const LoanSchema = new mongoose.Schema({
     type: Number,
     unique: true,
   },
+  status: {
+    type: String,
+    enum: ["active", "closed"],
+    default: "active",
+  },
   borrower_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
