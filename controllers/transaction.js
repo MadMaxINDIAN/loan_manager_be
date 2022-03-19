@@ -1,6 +1,7 @@
 const Loan = require("../models/Loan");
 const Transaction = require("../models/Transaction");
 const { validationResult } = require("express-validator");
+const Borrower = require("../models/Borrowers");
 
 exports.addTransaction = (req, res) => {
     const errors = validationResult(req);
@@ -10,7 +11,7 @@ exports.addTransaction = (req, res) => {
     const id = req.params.id;
     let { amount, date } = req.body;
     date = new Date(date);
-    Loan.findById(id, (err, loan) => {
+    Loan.findById(id, async (err, loan) => {
         if (err) {
             res.status(500).json({ message: "Loan account doesn't exist" });
         } else {
@@ -40,10 +41,41 @@ exports.addTransaction = (req, res) => {
                             err,
                         });
                     } else {
-                        res.status(200).json({
-                            message: "Transaction done successfully",
-                            transaction,
-                        });
+                        Borrower.findById(loan.borrower_id)
+                            .then((borrower) => {
+                                if (!borrower) {
+                                    return res
+                                        .status(404)
+                                        .json({
+                                            message: "Borrower not found",
+                                        });
+                                }
+
+                                return Loan.find({ borrower_id: loan.borrower_id }).then(
+                                    (loans) => {
+                                        if (!loans) {
+                                            return res
+                                                .status(404)
+                                                .json({
+                                                    message: "Loans not found",
+                                                });
+                                        }
+                                        return res.json({
+                                            message: "Entry done successfully",
+                                            borrower,
+                                            loans,
+                                            transaction
+                                        });
+                                    }
+                                );
+                            })
+                            .catch((err) => {
+                                return res.status(500).json({
+                                    message:
+                                        err.message ||
+                                        "Some error occurred while retrieving borrower.",
+                                });
+                            });
                     }
                 });
             });
