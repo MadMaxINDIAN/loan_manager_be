@@ -56,7 +56,11 @@ exports.getSummary = async (req, res) => {
       if (!summary) {
         return res.status(404).json({ message: "Summary not found" });
       }
-      return res.json({ message: "Summary found", summary, amount_to_be_paid: amount_to_be_paid[0].total });
+      return res.json({
+        message: "Summary found",
+        summary,
+        amount_to_be_paid: amount_to_be_paid[0].total,
+      });
     })
     .catch((err) => {
       return res.status(500).json({
@@ -67,9 +71,9 @@ exports.getSummary = async (req, res) => {
 
 exports.getDailySummary = async (req, res) => {
   try {
-    const { date } = req.body;
-    const lb = new Date(date.substring(0, 10));
-    const ub = lb.addDays(1);
+    const { from_date, to_date } = req.body;
+    const lb = new Date(from_date.substring(0, 10));
+    const ub = new Date(to_date.substring(0, 10)).addDays(1);
     const result = await Loan.aggregate([
       { $match: { opening_date: { $gte: lb, $lt: ub } } },
       { $group: { _id: null, total: { $sum: "$loan_amount" } } },
