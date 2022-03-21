@@ -11,4 +11,9 @@ router.post(
   transactionController.addTransaction
 );
 
+// URL: /transaction/badDebt/:loan_id
+// Method: POST
+// Description: Mark a loan account as bad debt
+router.post("/badDebt/:loan_id", transactionController.badDebt);
+
 module.exports = router;

@@ -4,6 +4,38 @@ const { validationResult } = require("express-validator");
 const Borrower = require("../models/Borrowers");
 const Summary = require("../models/Summary");
 
+exports.badDebt = async (req, res) => {
+    const loan_id = req.params.loan_id;
+
+    Loan.findById(loan_id, async (err, loan) => {
+        if (err) {
+            return res.status(500).json({
+                message:
+                    err.message || "Some error occurred while retrieving loan.",
+            });
+        }
+        if (!loan) {
+            return res.status(404).json({
+                message: "Loan not found",
+            });
+        }
+        loan.status = "bad debt";
+        loan.save((err, loan) => {
+            if (err) {
+                return res.status(500).json({
+                    message:
+                        err.message ||
+                        "Some error occurred while retrieving loan.",
+                });
+            }
+            return res.json({
+                message: "Loan updated successfully",
+                loan,
+            });
+        });
+    });
+};
+
 exports.addTransaction = (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
