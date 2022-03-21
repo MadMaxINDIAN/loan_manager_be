@@ -38,12 +38,25 @@ exports.getSummary = async (req, res) => {
     });
     await newSummary.save();
   }
+  const amount_to_be_paid = await Loan.aggregate([
+    {
+      $match: {
+        status: "active",
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: "$amount_to_be_paid" },
+      },
+    },
+  ]);
   Summary.find({})
     .then((summary) => {
       if (!summary) {
         return res.status(404).json({ message: "Summary not found" });
       }
-      return res.json({ message: "Summary found", summary });
+      return res.json({ message: "Summary found", summary, amount_to_be_paid: amount_to_be_paid[0].total });
     })
     .catch((err) => {
       return res.status(500).json({
@@ -89,12 +102,10 @@ exports.getSevenDaysSummary = async (req, res) => {
       { $match: { opening_date: { $gte: lb, $lt: ub } } },
       { $group: { _id: "$opening_date", total: { $sum: "$loan_amount" } } },
     ]);
-    console.log(loans);
     const transactions = await Transaction.aggregate([
       { $match: { date: { $gte: lb, $lt: ub } } },
       { $group: { _id: "$date", total: { $sum: "$amount" } } },
     ]);
-    console.log(transactions);
     return res.json({
       message: "Summary found",
       loans,

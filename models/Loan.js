@@ -7,7 +7,7 @@ const LoanSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["active", "closed"],
+    enum: ["active", "closed", "bad debt"],
     default: "active",
   },
   borrower_id: {
