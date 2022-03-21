@@ -19,4 +19,9 @@ router.post(
 // Description: Get all loan accounts
 router.get("/get", loanController.getAllLoans);
 
+// URL: /loan/get/:id
+// Method: GET
+// Description: Get a loan account by id
+router.get("/get/:id", loanController.getLoanById);
+
 module.exports = router;
