@@ -38,6 +38,11 @@ exports.addTransaction = (req, res) => {
                 });
             } else if (loan.amount_to_be_paid - amount === 0) {
                 loan.status = "closed";
+                const finalPayments = [];
+                for (let i = 0; i <= day; i++) {
+                    finalPayments.push(loan.payments[i]);
+                }
+                loan.payments = finalPayments;
             }
             loan.amount_to_be_paid -= amount;
             loan.save((err, loan) => {
