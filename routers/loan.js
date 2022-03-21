@@ -24,4 +24,6 @@ router.get("/get", loanController.getAllLoans);
 // Description: Get a loan account by id
 router.get("/get/:id", loanController.getLoanById);
 
+router.post("/get/dates", loanController.getLoansByDates);
+
 module.exports = router;

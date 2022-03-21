@@ -109,3 +109,20 @@ exports.getLoanById = (req, res) => {
       });
     });
 };
+
+exports.getLoansByDates = async (req, res) => {
+  try {
+    const { from_date, to_date } = req.body;
+    const lb = new Date(from_date.substring(0, 10));
+    const ub = new Date(to_date.substring(0, 10)).addDays(1);
+    const loans = await Loan.find({
+      opening_date: {
+        $gte: lb,
+        $lt: ub,
+      },
+    }).populate("borrower_id");
+    res.status(200).json({ message: "Loans found", loans });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
