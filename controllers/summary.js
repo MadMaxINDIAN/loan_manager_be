@@ -59,7 +59,7 @@ exports.getSummary = async (req, res) => {
       return res.json({
         message: "Summary found",
         summary,
-        amount_to_be_paid: amount_to_be_paid[0].total,
+        amount_to_be_paid: amount_to_be_paid[0]?.total,
       });
     })
     .catch((err) => {
