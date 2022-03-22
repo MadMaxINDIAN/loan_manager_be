@@ -104,11 +104,25 @@ exports.getSevenDaysSummary = async (req, res) => {
     const lb = ub.subtractDays(7);
     const loans = await Loan.aggregate([
       { $match: { opening_date: { $gte: lb, $lt: ub } } },
-      { $group: { _id: "$opening_date", total: { $sum: "$loan_amount" } } },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$opening_date" },
+          },
+          total: { $sum: "$loan_amount" },
+        },
+      },
     ]);
     const transactions = await Transaction.aggregate([
       { $match: { date: { $gte: lb, $lt: ub } } },
-      { $group: { _id: "$date", total: { $sum: "$amount" } } },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$date" },
+          },
+          total: { $sum: "$amount" },
+        },
+      },
     ]);
     return res.json({
       message: "Summary found",
