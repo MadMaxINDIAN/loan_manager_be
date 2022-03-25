@@ -1,6 +1,7 @@
 const Loan = require("../models/Loan");
 const Borrower = require("../models/Borrowers");
 const Summary = require("../models/Summary");
+const Transaction = require("../models/Transaction");
 const { validationResult } = require("express-validator");
 
 exports.addLoan = (req, res) => {
@@ -54,9 +55,14 @@ exports.addLoan = (req, res) => {
         if (err) {
           return res.status(500).json({
             message:
-              err.message || "Some error occurred while creating the loan.",
+            err.message || "Some error occurred while creating the loan.",
           });
         } else {
+          const transaction = await Transaction.create({
+            loan_account_id: loan._id,
+            amount: daily,
+            date: req.body.opening_date,
+          })
           const summary = await Summary.findOne({
             fin_year: fiscalYr,
           });
@@ -71,7 +77,7 @@ exports.addLoan = (req, res) => {
             summary.amount_invested += +req.body.loan_amount;
             await summary.save();
           }
-          return res.json({ message: "Loan accout created", loan });
+          return res.json({ message: "Loan accout created", loan, transaction });
         }
       });
     });
