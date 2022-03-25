@@ -69,11 +69,12 @@ exports.addLoan = (req, res) => {
           if (!summary) {
             const newSummary = new Summary({
               fin_year: fiscalYr,
-              amount_taken: 0,
+              amount_taken: daily,
               amount_invested: req.body.loan_amount,
             });
             await newSummary.save();
           } else {
+            summary.amount_taken += daily;
             summary.amount_invested += +req.body.loan_amount;
             await summary.save();
           }

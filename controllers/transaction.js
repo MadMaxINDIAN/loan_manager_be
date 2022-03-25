@@ -57,19 +57,40 @@ exports.addTransaction = (req, res) => {
   }
   const id = req.params.id;
   let { amount, date } = req.body;
-  date = new Date(date);
+  date = new Date(date.substring(0, 10));
   Loan.findById(id, async (err, loan) => {
     if (err) {
       res.status(500).json({ message: "Loan account doesn't exist" });
     } else {
+      const lb = date;
+      const ub = date.addDays(1);
       const opening_date = loan.opening_date;
       const time_diff = date.getTime() - opening_date.getTime();
       const day = Math.floor(time_diff / (1000 * 3600 * 24));
-      if (loan.payments[day] !== 0) {
+      if (day < 0) {
+        return res.status(400).json({ message: "Entry can not be updated on and before loan opening date" });
+      }
+      if (loan.payments[day] !== 0 && req.body.user !== "admin") {
         return res.status(400).json({
           message: "Payment already made for this day",
         });
       }
+      if (loan.payments[day] !== 0 && req.body.user === "admin") {
+        const transaction = await Transaction.findOneAndDelete({
+          loan_account_id: id,
+          date: {
+            $gte: lb,
+            $lt: ub,
+          }
+        })
+        const summary = await Summary.findOne({
+          fin_year: fiscalYr,
+        });
+        loan.amount_to_be_paid += loan.payments[day];
+        summary.amount_taken -= loan.payments[day];
+        await summary.save();
+      }
+
       loan.payments[day] = amount;
       if (loan.amount_to_be_paid - amount < 0) {
         return res.status(400).json({
