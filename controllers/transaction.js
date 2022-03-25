@@ -19,15 +19,20 @@ exports.badDebt = async (req, res) => {
       });
     }
     loan.status = "bad debt";
-    loan.save((err, loan) => {
+    loan.save(async (err, loan) => {
       if (err) {
         return res.status(500).json({
           message: err.message || "Some error occurred while retrieving loan.",
         });
       }
+      const borrower = await Borrower.findById(loan.borrower_id);
+      const loans = await Loan.find({
+        borrower_id: borrower._id,
+      });
       return res.json({
         message: "Loan updated successfully",
-        loan,
+        loans,
+        borrower
       });
     });
   });
