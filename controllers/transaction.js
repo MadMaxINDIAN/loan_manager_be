@@ -32,7 +32,7 @@ exports.badDebt = async (req, res) => {
       return res.json({
         message: "Loan updated successfully",
         loans,
-        borrower
+        borrower,
       });
     });
   });
@@ -65,10 +65,13 @@ exports.addTransaction = (req, res) => {
       const lb = date;
       const ub = date.addDays(1);
       const opening_date = loan.opening_date;
+      opening_date.setHours(5, 30, 0, 0);
       const time_diff = date.getTime() - opening_date.getTime();
-      const day = Math.floor(time_diff / (1000 * 3600 * 24));
-      if (day < 0) {
-        return res.status(400).json({ message: "Entry can not be updated on and before loan opening date" });
+      const day = time_diff / (1000 * 3600 * 24);
+      if (day <= 0) {
+        return res.status(400).json({
+          message: "Entry can not be updated on and before loan opening date",
+        });
       }
       if (loan.payments[day] !== 0 && req.body.user !== "admin") {
         return res.status(400).json({
@@ -81,8 +84,8 @@ exports.addTransaction = (req, res) => {
           date: {
             $gte: lb,
             $lt: ub,
-          }
-        })
+          },
+        });
         const summary = await Summary.findOne({
           fin_year: fiscalYr,
         });
