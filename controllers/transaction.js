@@ -48,7 +48,6 @@ exports.addTransaction = (req, res) => {
 
   var fiscalYr = "";
   if (curMonth > 2) {
-    //
     var nextYr1 = (today.getFullYear() + 1).toString();
     fiscalYr = today.getFullYear().toString() + "-" + nextYr1;
   } else {
