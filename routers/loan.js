@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const loanController = require("../controllers/loan");
 const { body } = require("express-validator");
+const authMiddleware = require("../middleware/auth");
 
 // URL: /loan/add
 // Method: POST
