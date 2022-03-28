@@ -5,15 +5,11 @@ const BorrowerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  address: {
-    type: String,
-  },
   contact: {
     type: String,
   },
   aadhar: {
     type: String,
-    required: true,
     unique: true,
   },
   occupation: {

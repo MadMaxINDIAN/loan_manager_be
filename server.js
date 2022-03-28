@@ -28,12 +28,14 @@ const borrowerRouter = require("./routers/borrower");
 const loanRouter = require("./routers/loan");
 const transactionRouter = require("./routers/transaction");
 const summaryRouter = require("./routers/summary");
+const authRouter = require("./routers/auth");
 
 // routes
 app.use("/borrower", borrowerRouter);
 app.use("/loan", loanRouter);
 app.use("/transaction", transactionRouter);
 app.use("/summary", summaryRouter);
+app.use("/auth", authRouter);
 
 // listening to port
 app.listen(process.env.PORT || 5000, () => {
