@@ -1,12 +1,14 @@
 const router = require("express").Router();
 const { body } = require("express-validator");
 const borrowerController = require("../controllers/borrower");
+const authMiddleware = require("../middleware/auth");
 
 // URL: /borrower/add
 // Method: POST
 // Description: Add a borrower
 router.post(
   "/add",
+  authMiddleware,
   [
     body("name").isLength({ min: 1 }).withMessage("Name is required"),
     body("contact")
@@ -28,16 +30,20 @@ router.post(
 // URL: /borrower/get
 // Method: GET
 // Description: Get all borrowers
-router.get("/get", borrowerController.getBorrowers);
+router.get("/get", authMiddleware, borrowerController.getBorrowers);
 
 // URL: /borrower/get/:id
 // Method: GET
 // Description: Get a borrower
-router.get("/get/:id", borrowerController.getBorrower);
+router.get("/get/:id", authMiddleware, borrowerController.getBorrower);
 
 // URL: /borrower/total_loan_accounts
 // Method: GET
 // Description: Get total loan accounts of all borrowers
-router.get("/total_loan_accounts", borrowerController.getTotalLoanAccounts);
+router.get(
+  "/total_loan_accounts",
+  authMiddleware,
+  borrowerController.getTotalLoanAccounts
+);
 
 module.exports = router;

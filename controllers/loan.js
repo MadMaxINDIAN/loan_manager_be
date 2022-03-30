@@ -22,11 +22,11 @@ exports.addLoan = (req, res) => {
           message: "SR No already exists",
         });
       }
-      const daily = (req.body.loan_amount * 1.2) / 60;
+      const daily = (req.body.loan_amount * 1.2) / req.body.loan_period;
       const amount_to_be_paid = req.body.loan_amount * 1.2 - daily;
       // array of length 60
       const payments = [];
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < req.body.loan_period; i++) {
         payments.push(0);
       }
       payments[0] = daily;
@@ -38,6 +38,7 @@ exports.addLoan = (req, res) => {
         daily_payment: daily,
         payments: payments,
         opening_date: req.body.opening_date,
+        loan_period: req.body.loan_period,
       });
       loan.save(async (err, loan) => {
         if (err) {

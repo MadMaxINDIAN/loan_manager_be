@@ -37,6 +37,10 @@ const LoanSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  loan_period: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Loan", LoanSchema);
