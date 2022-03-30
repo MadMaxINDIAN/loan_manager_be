@@ -9,7 +9,6 @@ router.post(
   "/add",
   [
     body("name").isLength({ min: 1 }).withMessage("Name is required"),
-    body("address").isLength({ min: 1 }).withMessage("Address is required"),
     body("contact")
       .escape()
       .exists({ checkFalsy: true })

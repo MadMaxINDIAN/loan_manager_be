@@ -16,7 +16,7 @@ exports.getTotalLoanAccounts = (req, res) => {
         message: err.message,
       });
     });
-}
+};
 
 exports.addBorrower = (req, res) => {
   const errors = validationResult(req);
@@ -34,7 +34,6 @@ exports.addBorrower = (req, res) => {
     }
     const borrower = new Borrower({
       name: req.body.name,
-      address: req.body.address,
       contact: req.body.contact,
       aadhar: req.body.aadhar,
       occupation: req.body.occupation,
