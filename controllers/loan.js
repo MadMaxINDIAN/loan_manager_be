@@ -11,18 +11,6 @@ exports.addLoan = (req, res) => {
       .status(422)
       .json({ message: "Validation failed", data: errors.array() });
   }
-  const today = new Date(req.body.opening_date);
-  var curMonth = today.getMonth();
-
-  var fiscalYr = "";
-  if (curMonth > 2) {
-    //
-    var nextYr1 = (today.getFullYear() + 1).toString();
-    fiscalYr = today.getFullYear().toString() + "-" + nextYr1;
-  } else {
-    var nextYr2 = today.getFullYear().toString();
-    fiscalYr = (today.getFullYear() - 1).toString() + "-" + nextYr2;
-  }
 
   Borrower.findById(req.body.borrower_id).then((borrower) => {
     if (!borrower) {
@@ -55,30 +43,31 @@ exports.addLoan = (req, res) => {
         if (err) {
           return res.status(500).json({
             message:
-            err.message || "Some error occurred while creating the loan.",
+              err.message || "Some error occurred while creating the loan.",
           });
         } else {
           const transaction = await Transaction.create({
             loan_account_id: loan._id,
             amount: daily,
             date: req.body.opening_date,
-          })
-          const summary = await Summary.findOne({
-            fin_year: fiscalYr,
           });
-          if (!summary) {
+          const summary = await Summary.find();
+          if (!summary.length) {
             const newSummary = new Summary({
-              fin_year: fiscalYr,
               amount_taken: daily,
               amount_invested: req.body.loan_amount,
             });
             await newSummary.save();
           } else {
-            summary.amount_taken += daily;
-            summary.amount_invested += +req.body.loan_amount;
-            await summary.save();
+            summary[0].amount_taken += daily;
+            summary[0].amount_invested += +req.body.loan_amount;
+            await summary[0].save();
           }
-          return res.json({ message: "Loan accout created", loan, transaction });
+          return res.json({
+            message: "Loan accout created",
+            loan,
+            transaction,
+          });
         }
       });
     });

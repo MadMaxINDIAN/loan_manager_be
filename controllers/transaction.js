@@ -43,17 +43,6 @@ exports.addTransaction = (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const today = new Date(req.body.date);
-  var curMonth = today.getMonth();
-
-  var fiscalYr = "";
-  if (curMonth > 2) {
-    var nextYr1 = (today.getFullYear() + 1).toString();
-    fiscalYr = today.getFullYear().toString() + "-" + nextYr1;
-  } else {
-    var nextYr2 = today.getFullYear().toString();
-    fiscalYr = (today.getFullYear() - 1).toString() + "-" + nextYr2;
-  }
   const id = req.params.id;
   let { amount, date } = req.body;
   date = new Date(date.substring(0, 10));
@@ -72,12 +61,12 @@ exports.addTransaction = (req, res) => {
           message: "Entry can not be updated on and before loan opening date",
         });
       }
-      if (loan.payments[day] !== 0 && req.body.user !== "admin") {
+      if (loan.payments[day] !== 0 && req?.user?.type !== "admin") {
         return res.status(400).json({
           message: "Payment already made for this day",
         });
       }
-      if (loan.payments[day] !== 0 && req.body.user === "admin") {
+      if (loan.payments[day] !== 0 && req?.user?.type === "admin") {
         const transaction = await Transaction.findOneAndDelete({
           loan_account_id: id,
           date: {
@@ -85,12 +74,10 @@ exports.addTransaction = (req, res) => {
             $lt: ub,
           },
         });
-        const summary = await Summary.findOne({
-          fin_year: fiscalYr,
-        });
+        const summary = await Summary.find();
         loan.amount_to_be_paid += loan.payments[day];
-        summary.amount_taken -= loan.payments[day];
-        await summary.save();
+        summary[0].amount_taken -= loan.payments[day];
+        await summary[0].save();
       }
 
       loan.payments[day] = amount;
@@ -121,19 +108,16 @@ exports.addTransaction = (req, res) => {
               err,
             });
           } else {
-            const summary = await Summary.findOne({
-              fin_year: fiscalYr,
-            });
-            if (!summary) {
+            const summary = await Summary.find();
+            if (!summary.length) {
               const newSummary = new Summary({
-                fin_year: fiscalYr,
                 amount_taken: req.body.amount,
                 amount_invested: 0,
               });
               await newSummary.save();
             } else {
-              summary.amount_taken += +req.body.amount;
-              await summary.save();
+              summary[0].amount_taken += +req.body.amount;
+              await summary[0].save();
             }
             Borrower.findById(loan.borrower_id)
               .then((borrower) => {

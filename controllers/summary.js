@@ -15,58 +15,47 @@ Date.prototype.subtractDays = function (days) {
 };
 
 exports.getSummary = async (req, res) => {
-  const today = new Date();
-  var curMonth = today.getMonth();
-
-  var fiscalYr = "";
-  if (curMonth > 3) {
-    //
-    var nextYr1 = (today.getFullYear() + 1).toString();
-    fiscalYr = today.getFullYear().toString() + "-" + nextYr1;
-  } else {
-    var nextYr2 = today.getFullYear().toString();
-    fiscalYr = (today.getFullYear() - 1).toString() + "-" + nextYr2;
-  }
-  const summary = await Summary.findOne({
-    fin_year: fiscalYr,
-  });
-  if (!summary) {
-    const newSummary = new Summary({
-      fin_year: fiscalYr,
-      amount_taken: 0,
-      amount_invested: 0,
-    });
-    await newSummary.save();
-  }
-  const amount_to_be_paid = await Loan.aggregate([
-    {
-      $match: {
-        status: "active",
+  try {
+    const amount_to_be_paid = await Loan.aggregate([
+      {
+        $match: {
+          status: "active",
+        },
       },
-    },
-    {
-      $group: {
-        _id: null,
-        total: { $sum: "$amount_to_be_paid" },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount_to_be_paid" },
+          total1: { $sum: "$daily_payment" },
+        },
       },
-    },
-  ]);
-  Summary.find({})
-    .then((summary) => {
-      if (!summary) {
-        return res.status(404).json({ message: "Summary not found" });
-      }
+    ]);
+    const summary = await Summary.find({});
+    if (!summary.length) {
+      const newSummary = new Summary({
+        amount_taken: 0,
+        amount_invested: 0,
+      });
+      await newSummary.save();
+      return res.json({
+        message: "Summary created",
+        summary: newSummary,
+        amount_to_be_paid: amount_to_be_paid[0]?.total || 0,
+        amount_receivable: amount_to_be_paid[0]?.total1 || 0,
+      });
+    } else {
       return res.json({
         message: "Summary found",
-        summary,
-        amount_to_be_paid: amount_to_be_paid[0]?.total,
+        summary: summary[0],
+        amount_to_be_paid: amount_to_be_paid[0]?.total || 0,
+        amount_receivable: amount_to_be_paid[0]?.total1 || 0,
       });
-    })
-    .catch((err) => {
-      return res.status(500).json({
-        message: err.message || "Some error occurred while retrieving summary.",
-      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message || "Some error occurred while retrieving summary.",
     });
+  }
 };
 
 exports.getDailySummary = async (req, res) => {
