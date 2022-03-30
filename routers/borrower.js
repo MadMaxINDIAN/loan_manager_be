@@ -6,6 +6,7 @@ const authMiddleware = require("../middleware/auth");
 // URL: /borrower/add
 // Method: POST
 // Description: Add a borrower
+// /^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/
 router.post(
   "/add",
   authMiddleware,
@@ -17,9 +18,16 @@ router.post(
       .isLength({ min: 10, max: 10 })
       .matches(/^[789]\d{9}$/)
       .withMessage("Contact number is invalid"),
-    body("aadhar")
-      .matches(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      .withMessage("Aadhar number is invalid"),
+    body("aadhar").custom((value, { req }) => {
+      if (value.length === 0) {
+        return true;
+      }
+      var regex = /^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/;
+      if (regex.test(value)) {
+        return true;
+      }
+      throw new Error("Aadhar number is invalid");
+    }),
     body("occupation")
       .isLength({ min: 1 })
       .withMessage("Occupation is required"),

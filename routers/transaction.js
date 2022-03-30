@@ -7,8 +7,8 @@ const authMiddleware = require("../middleware/auth");
 // Method: POST
 // Description: Add a transaction
 router.post(
-  authMiddleware,
   "/:id/add",
+  authMiddleware,
   [body("amount").isNumeric().withMessage("Amount must be a number")],
   transactionController.addTransaction
 );
