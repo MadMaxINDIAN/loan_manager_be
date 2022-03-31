@@ -24,8 +24,9 @@ router.get("/get", authMiddleware, loanController.getAllLoans);
 // URL: /loan/get/:id
 // Method: GET
 // Description: Get a loan account by id
-router.get("/get/:id", authMiddleware, loanController.getLoanById);
+router.get("/get/active", authMiddleware, loanController.getActiveLoans);
 
 router.post("/get/dates", authMiddleware, loanController.getLoansByDates);
+router.get("/get/:id", authMiddleware, loanController.getLoanById);
 
 module.exports = router;

@@ -123,3 +123,14 @@ exports.getLoansByDates = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.getActiveLoans = async (req, res) => {
+  try {
+    const loans = await Loan.find({
+      status: "active",
+    }).populate("borrower_id");
+    res.status(200).json({ message: "Loans found", loans });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

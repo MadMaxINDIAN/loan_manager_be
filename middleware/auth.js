@@ -9,11 +9,11 @@ module.exports = (req, res, next) => {
   let decodedToken;
   try {
     decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    if (!decodedToken) {
+      return res.status(401).json({ message: "Not authenticated!" });
+    }
   } catch (err) {
-    err.statusCode = 500;
-    throw err;
-  }
-  if (!decodedToken) {
+    console.log(err);
     return res.status(401).json({ message: "Not authenticated!" });
   }
   req.user = decodedToken;
