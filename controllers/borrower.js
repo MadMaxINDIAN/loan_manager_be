@@ -25,10 +25,10 @@ exports.addBorrower = (req, res) => {
       .status(422)
       .json({ message: "Validation failed", data: errors.array() });
   }
-  Borrower.findOne({ aadhar: req.body.aadhar }).then((borr) => {
+  Borrower.findOne({ $or: [{ aadhar: req.body.aadhar }, {name: req.body.name}]}).then((borr) => {
     if (borr) {
       return res.status(200).json({
-        message: "Borrowe found",
+        message: "Borrower found",
         borrower: borr,
       });
     }
