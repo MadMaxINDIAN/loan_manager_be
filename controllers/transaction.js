@@ -174,7 +174,26 @@ exports.getTransactionByDates = async (req, res) => {
         model: "Borrower",
       },
     });
-    res.status(200).json({ message: "Transactions found", transactions });
+    const result = await Transaction.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: lb,
+            $lt: ub,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" },
+        },
+      },
+    ]);
+    const total = result[0].total;
+    res
+      .status(200)
+      .json({ message: "Transactions found", transactions, total });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
