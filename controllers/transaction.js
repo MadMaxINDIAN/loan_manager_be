@@ -156,3 +156,26 @@ exports.addTransaction = (req, res) => {
     }
   });
 };
+
+exports.getTransactionByDates = async (req, res) => {
+  try {
+    const { from_date, to_date } = req.body;
+    const lb = new Date(from_date.substring(0, 10));
+    const ub = new Date(to_date.substring(0, 10)).addDays(1);
+    let transactions = await Transaction.find({
+      date: {
+        $gte: lb,
+        $lt: ub,
+      },
+    }).populate({
+      path: "loan_account_id",
+      populate: {
+        path: "borrower_id",
+        model: "Borrower",
+      },
+    });
+    res.status(200).json({ message: "Transactions found", transactions });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

@@ -18,4 +18,10 @@ router.post(
 // Description: Mark a loan account as bad debt
 router.post("/badDebt/:loan_id", authMiddleware, transactionController.badDebt);
 
+router.post(
+  "/get/dates",
+  authMiddleware,
+  transactionController.getTransactionByDates
+);
+
 module.exports = router;
