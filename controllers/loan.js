@@ -78,7 +78,7 @@ exports.addLoan = (req, res) => {
 exports.getAllLoans = (req, res) => {
   Loan.find({})
     .populate("borrower_id")
-    .sort('sr_no')
+    .sort("sr_no")
     .then((loans) => {
       if (!loans) {
         return res.status(404).json({ message: "Loans not found" });
@@ -129,8 +129,22 @@ exports.getActiveLoans = async (req, res) => {
   try {
     const loans = await Loan.find({
       status: "active",
-    }).populate("borrower_id").sort('sr_no');
+    })
+      .populate("borrower_id")
+      .sort("sr_no");
     res.status(200).json({ message: "Loans found", loans });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getLoanBySrNo = async (req, res) => {
+  try {
+    const loan = await Loan.findOne({ sr_no: req.params.sr_no });
+    if (!loan) {
+      return res.status(404).json({ message: "Loan not found" });
+    }
+    return res.json({ message: "Loan found", loan_id: loan._id });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
