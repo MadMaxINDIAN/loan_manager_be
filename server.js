@@ -37,6 +37,11 @@ app.use("/transaction", transactionRouter);
 app.use("/summary", summaryRouter);
 app.use("/auth", authRouter);
 
+app.get("/", (req, res) => {
+  console.log("Server is up...");
+  res.send("Hello Madhuresh");
+})
+
 // listening to port
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Server started on port ${process.env.PORT || 5000}`);
