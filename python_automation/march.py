@@ -6,8 +6,7 @@ import random
 from pprint import pprint
 import pandas as pd
 
-df = pd.read_excel (r'MICRO jan.xlsx')
-df = df[37:]
+df = pd.read_excel (r'MICRO 0008.xlsx')
 
 for i in range(len(df)):
     headers = {
@@ -23,7 +22,7 @@ for i in range(len(df)):
         row = 10
         myobj = {
             'amount': df.iloc[i, row + date],
-            'date': (pd.to_datetime(f"01/{date+1}/2022").strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
+            'date': (pd.to_datetime(f"03/{date+1}/2022").strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
         }
         print(myobj)
         data = requests.post(url, data=myobj, headers=headers)

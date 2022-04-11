@@ -6,8 +6,8 @@ import random
 from pprint import pprint
 import pandas as pd
 
-df = pd.read_excel (r'MICRO jan.xlsx')
-df = df[37:]
+df = pd.read_excel (r'MICRO 0008.xlsx')
+df = df[197:]
 
 for i in range(len(df)):
     # borrower api call

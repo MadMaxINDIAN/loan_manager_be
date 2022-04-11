@@ -6,8 +6,8 @@ import random
 from pprint import pprint
 import pandas as pd
 
-df = pd.read_excel (r'MICRO jan.xlsx')
-df = df[37:]
+df = pd.read_excel (r'MICRO feb.xlsx')
+df = df[143:]
 
 for i in range(len(df)):
     # borrower api call
@@ -32,8 +32,8 @@ for i in range(len(df)):
     url = 'http://localhost:5000/loan/add'
     myobj = {
         "borrower_id": bid,
-        "loan_amount": df.iloc[i,4]/1.2,
-        "opening_date": pd.to_datetime(df.iloc[i, 3]).strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+        "loan_amount": df.iloc[i,3]/1.2,
+        "opening_date": pd.to_datetime(df.iloc[i, 2]).strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
         "sr_no": df.iloc[i,0],
         "loan_period": 60
     }
