@@ -35,7 +35,7 @@ exports.addBorrower = (req, res) => {
     const borrower = new Borrower({
       name: req.body.name,
       contact: req.body.contact,
-      aadhar: req.body.aadhar,
+      aadhar: req.body.aadhar.length ? req.body.aadhar : null,
       occupation: req.body.occupation,
     });
     borrower.save((err, borrower) => {

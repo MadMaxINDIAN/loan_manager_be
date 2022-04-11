@@ -12,12 +12,16 @@ router.post(
   authMiddleware,
   [
     body("name").isLength({ min: 1 }).withMessage("Name is required"),
-    body("contact")
-      .escape()
-      .exists({ checkFalsy: true })
-      .isLength({ min: 10, max: 10 })
-      .matches(/^[789]\d{9}$/)
-      .withMessage("Contact number is invalid"),
+    body("contact").custom((value, { req }) => {
+      if (value.length === 0) {
+        return true;
+      }
+      var regex = /^[789]\d{9}$/;
+      if (regex.test(value)) {
+        return true;
+      }
+      throw new Error("Contact number is invalid");
+    }),
     body("aadhar").custom((value, { req }) => {
       if (value.length === 0) {
         return true;

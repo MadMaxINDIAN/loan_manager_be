@@ -10,7 +10,6 @@ const BorrowerSchema = new mongoose.Schema({
   },
   aadhar: {
     type: String,
-    unique: true,
   },
   occupation: {
     type: String,
