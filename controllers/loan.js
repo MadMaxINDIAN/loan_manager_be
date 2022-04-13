@@ -26,7 +26,7 @@ exports.addLoan = (req, res) => {
       const amount_to_be_paid = req.body.loan_amount * 1.2 - daily;
       // array of length 60
       const payments = [];
-      for (let i = 0; i < req.body.loan_period; i++) {
+      for (let i = 0; i < 365; i++) {
         payments.push(0);
       }
       payments[0] = daily;
