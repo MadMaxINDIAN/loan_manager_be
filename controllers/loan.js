@@ -56,12 +56,12 @@ exports.addLoan = (req, res) => {
           if (!summary.length) {
             const newSummary = new Summary({
               amount_taken: daily,
-              amount_invested: req.body.loan_amount,
+              amount_invested: req.body.loan_amount - daily/1.2,
             });
             await newSummary.save();
           } else {
             summary[0].amount_taken += daily;
-            summary[0].amount_invested += +req.body.loan_amount;
+            summary[0].amount_invested += +req.body.loan_amount - daily/1.2;
             await summary[0].save();
           }
           return res.json({
