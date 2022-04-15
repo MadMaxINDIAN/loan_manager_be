@@ -16,6 +16,19 @@ router.post(
   loanController.addLoan
 );
 
+// URL: /loan/update
+// Method: POST
+// Description: Add a loan account
+router.post(
+  "/update",
+  authMiddleware,
+  [
+    body("sr_no").isNumeric().withMessage("Enter valid SR No"),
+    body("loan_amount").isNumeric().withMessage("Enter valid loan amount"),
+  ],
+  loanController.updateLoan
+);
+
 // URL: /loan/get
 // Method: GET
 // Description: Get all loan accounts

@@ -56,12 +56,12 @@ exports.addLoan = (req, res) => {
           if (!summary.length) {
             const newSummary = new Summary({
               amount_taken: daily,
-              amount_invested: req.body.loan_amount - daily/1.2,
+              amount_invested: req.body.loan_amount - daily / 1.2,
             });
             await newSummary.save();
           } else {
             summary[0].amount_taken += daily;
-            summary[0].amount_invested += +req.body.loan_amount - daily/1.2;
+            summary[0].amount_invested += +req.body.loan_amount - daily / 1.2;
             await summary[0].save();
           }
           return res.json({
@@ -73,6 +73,33 @@ exports.addLoan = (req, res) => {
       });
     });
   });
+};
+
+exports.updateLoan = async (req, res) => {
+  if (req?.user?.type !== "admin") {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "Validation failed", data: errors.array() });
+  }
+  try {
+    const loan = await Loan.findOneAndUpdate(
+      { sr_no: req.body.old_sr_no },
+      {
+        sr_no: req.body.sr_no,
+      },
+      { new: true }
+    );
+    if (!loan) {
+      return res.status(404).json({ message: "Loan not found" });
+    }
+    return res.json({ message: "Loan updated", loan });
+  } catch (err) {
+    return res.status(500).json({ message: "Changes cannot be made" });
+  }
 };
 
 exports.getAllLoans = (req, res) => {
@@ -140,11 +167,13 @@ exports.getActiveLoans = async (req, res) => {
 
 exports.getLoanBySrNo = async (req, res) => {
   try {
-    const loan = await Loan.findOne({ sr_no: req.params.sr_no });
+    const loan = await Loan.findOne({ sr_no: req.params.sr_no }).populate(
+      "borrower_id"
+    );
     if (!loan) {
       return res.status(404).json({ message: "Loan not found" });
     }
-    return res.json({ message: "Loan found", loan_id: loan._id });
+    return res.json({ message: "Loan found", loan_id: loan._id, loan });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

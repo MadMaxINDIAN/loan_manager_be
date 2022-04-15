@@ -25,7 +25,9 @@ exports.addBorrower = (req, res) => {
       .status(422)
       .json({ message: "Validation failed", data: errors.array() });
   }
-  Borrower.findOne({ $or: [{ aadhar: req.body.aadhar }, {name: req.body.name}]}).then((borr) => {
+  Borrower.findOne({
+    $or: [{ aadhar: req.body.aadhar }, { name: req.body.name }],
+  }).then((borr) => {
     if (borr) {
       return res.status(200).json({
         message: "Borrower found",
@@ -49,6 +51,29 @@ exports.addBorrower = (req, res) => {
       }
     });
   });
+};
+
+exports.updateBorrower = async (req, res) => {
+  if (req?.user?.type !== "admin") {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "Validation failed", data: errors.array() });
+  }
+  const updatedBorrower = await Borrower.findOneAndUpdate(
+    { $or: [{ aadhar: req.body.old_aadhar }, { name: req.body.old_name }] },
+    {
+      name: req.body.name,
+      contact: req.body.contact,
+      aadhar: req.body.aadhar.length ? req.body.aadhar : null,
+      occupation: req.body.occupation,
+    },
+    { new: true }
+  );
+  return res.json({ message: "Borrower updated", borrower: updatedBorrower });
 };
 
 exports.getBorrowers = (req, res) => {
