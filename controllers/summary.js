@@ -88,7 +88,13 @@ exports.getDailySummary = async (req, res) => {
 exports.getSevenDaysSummary = async (req, res) => {
   try {
     let ub = new Date();
-    ub.setHours(5, 30, 0, 0);
+    if (process.env.NODE_ENV === "development") {
+      // ONLY FOR LOCAL TESTING
+      ub.setHours(5, 30, 0, 0);
+    } else {
+      // ONLY FOR PRODUCTION
+      ub.setHours(0, 0, 0, 0);
+    }
     ub = ub.addDays(1);
     const lb = ub.subtractDays(7);
     const loans = await Loan.aggregate([

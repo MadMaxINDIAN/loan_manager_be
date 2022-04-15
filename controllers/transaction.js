@@ -53,7 +53,15 @@ exports.addTransaction = (req, res) => {
       const lb = date;
       const ub = date.addDays(1);
       const opening_date = loan.opening_date;
-      opening_date.setHours(5, 30, 0, 0);
+
+      if (process.env.NODE_ENV === "development") {
+        // ONLY FOR LOCAL TESTING
+        opening_date.setHours(5, 30, 0, 0);
+      } else {
+        // ONLY FOR PRODUCTION
+        opening_date.setHours(0, 0, 0, 0);
+      }
+
       const time_diff = date.getTime() - opening_date.getTime();
       const day = time_diff / (1000 * 3600 * 24);
       console.log(day);
