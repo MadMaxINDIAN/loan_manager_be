@@ -59,6 +59,8 @@ exports.addTransaction = (req, res) => {
       console.log(day);
       console.log(ub);
       console.log(lb);
+      console.log(opening_date);
+      console.log(date);
       console.log(loan.payments[day]);
       if (day <= 0) {
         return res.status(400).json({
