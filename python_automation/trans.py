@@ -11,7 +11,7 @@ df = df[37:]
 
 for i in range(len(df)):
     headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hZGh1cmVzaCIsInR5cGUiOiJ1c2VyIiwiaWF0IjoxNjQ5NDMyODk4fQ.9GcWMJGZbeD7PFMlNKo14JI86bM7NCd-tBx2frYt_YU'
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtmYyIsInR5cGUiOiJ1c2VyIiwiaWF0IjoxNjUwMjA1OTgyfQ.AM-PZOYjN9gGAzvsF0qOP8u_S_vddGx1kKpSbt2BtWw'
     }
     url = f'http://localhost:5000/loan/get/sr_no/{df.iloc[i, 0]}'
     data = requests.get(url, headers=headers)

@@ -6,7 +6,7 @@ import random
 from pprint import pprint
 import pandas as pd
 
-df = pd.read_excel (r'MICRO april.xlsx')
+df = pd.read_excel (r'Micro april.xlsx')
 df = df[273:]
 
 for i in range(len(df)):
@@ -20,7 +20,7 @@ for i in range(len(df)):
     }
     pprint(myobj)
     headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5hbWFuc2FteWFrIiwidHlwZSI6ImFkbWluIiwiaWF0IjoxNjQ5NjU4MjYwfQ.2xyvClKP4b5DXUEvb7CUNRhapOPaT5V1i5DjOOkkCuo'
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtmYyIsInR5cGUiOiJ1c2VyIiwiaWF0IjoxNjUwMjA1OTgyfQ.AM-PZOYjN9gGAzvsF0qOP8u_S_vddGx1kKpSbt2BtWw'
     }
     data = requests.post(url, data = myobj, headers=headers)
     data = data.json()
