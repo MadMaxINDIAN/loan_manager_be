@@ -17,7 +17,7 @@ for i in range(len(df)):
     data = data.json()
     id = data['loan_id']
     url = f'http://localhost:5000/transaction/{id}/add'
-    for date in range(13):
+    for date in range(13, 15):
         row = 10
         myobj = {
             'amount': df.iloc[i, row + date],
