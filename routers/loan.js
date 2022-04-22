@@ -25,6 +25,7 @@ router.post(
   authMiddleware,
   [
     body("sr_no").isNumeric().withMessage("Enter valid SR No"),
+    body("loan_period").isNumeric().withMessage("Enter valid loan period"),
     body("loan_amount").isNumeric().withMessage("Enter valid loan amount"),
   ],
   loanController.updateLoan
