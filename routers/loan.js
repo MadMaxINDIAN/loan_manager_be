@@ -42,5 +42,6 @@ router.get("/get/active", authMiddleware, loanController.getActiveLoans);
 router.post("/get/dates", authMiddleware, loanController.getLoansByDates);
 router.get("/get/sr_no/:sr_no", authMiddleware, loanController.getLoanBySrNo);
 router.get("/get/:id", authMiddleware, loanController.getLoanById);
+router.delete("/delete/:sr_no", authMiddleware, loanController.deleteLoan);
 
 module.exports = router;

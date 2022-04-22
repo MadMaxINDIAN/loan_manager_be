@@ -181,3 +181,27 @@ exports.getLoanBySrNo = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.deleteLoan = async (req, res) => {
+  if (req?.user?.type !== "admin") {
+    return res.status(401).json({ message: "Only admin can delete loan account" });
+  }
+  
+  const sr_no = req.params.sr_no;
+  try {
+    const loan = await Loan.findOne({ sr_no: sr_no });
+    if (!loan) {
+      return res.status(404).json({ message: "Loan not found" });
+    }
+    const summary = await Summary.find();
+    const sum = loan.payments.reduce((a, b) => a + b, 0);
+    summary[0].amount_invested -= loan.loan_amount;
+    summary[0].amount_invested += sum/1.2;
+    await summary[0].save();
+    await loan.remove();
+    await Transaction.deleteMany({ loan_account_id: loan._id });
+    return res.json({ message: "Loan deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Some error occurred" });
+  }
+}
