@@ -86,10 +86,13 @@ exports.updateLoan = async (req, res) => {
       .json({ message: "Validation failed", data: errors.array() });
   }
   try {
+    const daily_payment = (req.body.loan_amount * 1.2) / req.body.loan_period;
     const loan = await Loan.findOneAndUpdate(
       { sr_no: req.body.old_sr_no },
       {
         sr_no: req.body.sr_no,
+        loan_period: req.body.loan_period,
+        daily_payment: daily_payment,
       },
       { new: true }
     );
