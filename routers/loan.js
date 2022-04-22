@@ -12,6 +12,7 @@ router.post(
   [
     body("sr_no").isNumeric().withMessage("Enter valid SR No"),
     body("loan_amount").isNumeric().withMessage("Enter valid loan amount"),
+    body("loan_period").isNumeric().withMessage("Enter valid loan period"),
   ],
   loanController.addLoan
 );
