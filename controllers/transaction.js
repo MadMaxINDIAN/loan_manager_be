@@ -85,7 +85,7 @@ exports.addTransaction = (req, res) => {
         const summary = await Summary.find();
         loan.amount_to_be_paid += loan.payments[day];
         summary[0].amount_taken -= loan.payments[day];
-        summary[0].amount_invested += loan.payments[day]/1.2;
+        summary[0].amount_invested += loan.payments[day] / 1.2;
         await summary[0].save();
       }
 
@@ -126,7 +126,7 @@ exports.addTransaction = (req, res) => {
               await newSummary.save();
             } else {
               summary[0].amount_taken += +req.body.amount;
-              summary[0].amount_invested -= req.body.amount/1.2;
+              summary[0].amount_invested -= req.body.amount / 1.2;
               await summary[0].save();
             }
             Borrower.findById(loan.borrower_id)
@@ -200,7 +200,12 @@ exports.getTransactionByDates = async (req, res) => {
         },
       },
     ]);
-    const total = result[0].total;
+    if (!transactions.length) {
+      return res.status(404).json({
+        message: "No transactions found",
+      });
+    }
+    const total = result[0]?.total;
     res
       .status(200)
       .json({ message: "Transactions found", transactions, total });
