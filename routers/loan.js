@@ -12,6 +12,7 @@ router.post(
   [
     body("sr_no").isNumeric().withMessage("Enter valid SR No"),
     body("loan_amount").isNumeric().withMessage("Enter valid loan amount"),
+    body("loan_period").isNumeric().withMessage("Enter valid loan period"),
   ],
   loanController.addLoan
 );
@@ -24,6 +25,7 @@ router.post(
   authMiddleware,
   [
     body("sr_no").isNumeric().withMessage("Enter valid SR No"),
+    body("loan_period").isNumeric().withMessage("Enter valid loan period"),
     body("loan_amount").isNumeric().withMessage("Enter valid loan amount"),
   ],
   loanController.updateLoan
@@ -42,5 +44,6 @@ router.get("/get/active", authMiddleware, loanController.getActiveLoans);
 router.post("/get/dates", authMiddleware, loanController.getLoansByDates);
 router.get("/get/sr_no/:sr_no", authMiddleware, loanController.getLoanBySrNo);
 router.get("/get/:id", authMiddleware, loanController.getLoanById);
+router.delete("/delete/:sr_no", authMiddleware, loanController.deleteLoan);
 
 module.exports = router;

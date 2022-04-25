@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
     return res.status(401).json({ message: "Not authorized!" });
@@ -11,6 +12,12 @@ module.exports = (req, res, next) => {
     decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
     if (!decodedToken) {
       return res.status(401).json({ message: "Not authenticated!" });
+    }
+    const user = await User.findOne({
+      username: decodedToken.username
+    })
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
   } catch (err) {
     return res.status(401).json({ message: "Not authenticated!" });
