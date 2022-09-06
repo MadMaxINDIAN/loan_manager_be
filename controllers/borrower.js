@@ -80,10 +80,9 @@ exports.getBorrowers = async (req, res) => {
   const name = req.query.search;
   Borrower.find({ name: { $regex: name, $options: 'i' } })
     .populate({ path: 'loans', match: { status: { $eq: 'active' } } })
-    .limit(10)
     .then(borrowers => borrowers.filter(b => b.loans !== null && b.loans.length !== 0))
     .then(borrowers => {
-      return res.status(200).json({ message: 'Borrowers fetched successfully', borrowers })
+      return res.status(200).json({ message: 'Borrowers fetched successfully', borrowers: borrowers.slice(0, 10) })
     }).catch((err) => {
       return res.status(500).json({
         message:
