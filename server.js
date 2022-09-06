@@ -29,6 +29,7 @@ const loanRouter = require("./routers/loan");
 const transactionRouter = require("./routers/transaction");
 const summaryRouter = require("./routers/summary");
 const authRouter = require("./routers/auth");
+const withdrawRouter = require("./routers/withdraw");
 
 // routes
 app.use("/borrower", borrowerRouter);
@@ -36,6 +37,7 @@ app.use("/loan", loanRouter);
 app.use("/transaction", transactionRouter);
 app.use("/summary", summaryRouter);
 app.use("/auth", authRouter);
+app.use("/withdraw", withdrawRouter);
 
 app.get("/", (req, res) => {
   console.log("Server is up...");

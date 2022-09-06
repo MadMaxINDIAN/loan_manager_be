@@ -1,0 +1,41 @@
+const Withdraw = require("../models/Withdraw");
+
+Date.prototype.addDays = function (days) {
+  var date = new Date(this.valueOf());
+  date.setDate(date.getDate() + days);
+  return date;
+};
+
+Date.prototype.subtractDays = function (days) {
+  var date = new Date(this.valueOf());
+  date.setDate(date.getDate() - days);
+  return date;
+};
+
+exports.addNewWithdrawTransaction = async (req, res) => {
+    if (req.user.type !== "admin") {
+        return res.status(401).json({
+            message: "Not authorised"
+        })
+    }
+
+    if (!req?.body?.name) {
+        return res.status(400).json({
+            message: "Name is required"
+        })
+    }
+
+    if (!req?.body?.amount) {
+        return res.status(400).json({
+            message: "Amount is required"
+        })
+    }
+
+    const withdraw = await Withdraw.create(req.body);
+
+    return res.json({
+        success: true,
+        message: "Transaction added",
+        withdraw
+    })
+};
