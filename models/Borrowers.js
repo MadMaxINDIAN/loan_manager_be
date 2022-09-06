@@ -14,6 +14,10 @@ const BorrowerSchema = new mongoose.Schema({
   occupation: {
     type: String,
   },
+  loans: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Loan",
+  }]
 });
 
 module.exports = mongoose.model("Borrower", BorrowerSchema);

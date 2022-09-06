@@ -93,4 +93,6 @@ router.get(
   borrowerController.getTotalLoanAccounts
 );
 
+// router.post('/addLoans', borrowerController.addLoansToBorrowers)
+
 module.exports = router;
