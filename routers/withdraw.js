@@ -1,4 +1,4 @@
-const { addNewWithdrawTransaction } = require("../controllers/withdraw");
+const { addNewWithdrawTransaction, getDetailsWithdrawTransaction } = require("../controllers/withdraw");
 const authMiddleware = require("../middleware/auth");
 const Withdraw = require("../models/Withdraw");
 const router = require("express").Router();
@@ -21,5 +21,7 @@ router.get("/total", authMiddleware, async (req, res) => {
         total: amount[0].total
       })
 })
+
+router.get("/transaction", authMiddleware, getDetailsWithdrawTransaction);
 
 module.exports = router;
