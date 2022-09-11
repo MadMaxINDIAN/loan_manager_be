@@ -78,17 +78,40 @@ exports.updateBorrower = async (req, res) => {
 
 exports.getBorrowers = async (req, res) => {
   const name = req.query.search;
-  Borrower.find({ name: { $regex: name, $options: 'i' } })
-    .populate({ path: 'loans', match: { status: { $eq: 'active' } } })
-    .then(borrowers => borrowers.filter(b => b.loans !== null && b.loans.length !== 0))
-    .then(borrowers => {
-      return res.status(200).json({ message: 'Borrowers fetched successfully', borrowers: borrowers.slice(0, 10) })
-    }).catch((err) => {
-      return res.status(500).json({
-        message:
-          err.message || "Some error occurred while retrieving borrowers.",
-      });
-    })
+  if (!isNaN(name)) {
+    Borrower.find()
+      .populate({
+        path: 'loans', match: {
+          $and: [
+            { status: { $eq: 'active' } },
+            { sr_no: { $eq: name } }
+          ]
+        }
+      })
+      .then(borrowers => {
+        return borrowers.filter(b => b.loans !== null && b.loans.length !== 0)
+      })
+      .then(borrowers => {
+        return res.status(200).json({ message: 'Borrowers fetched successfully', borrowers: borrowers.slice(0, 10) })
+      }).catch((err) => {
+        return res.status(500).json({
+          message:
+            err.message || "Some error occurred while retrieving borrowers.",
+        });
+      })
+  } else {
+    Borrower.find({ name: { $regex: name, $options: 'i' } })
+      .populate({ path: 'loans', match: { status: { $eq: 'active' } } })
+      .then(borrowers => borrowers.filter(b => b.loans !== null && b.loans.length !== 0))
+      .then(borrowers => {
+        return res.status(200).json({ message: 'Borrowers fetched successfully', borrowers: borrowers.slice(0, 10) })
+      }).catch((err) => {
+        return res.status(500).json({
+          message:
+            err.message || "Some error occurred while retrieving borrowers.",
+        });
+      })
+  }
 };
 
 exports.getBorrower = (req, res) => {
