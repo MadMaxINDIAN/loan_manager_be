@@ -14,6 +14,12 @@ const TransactionSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  type: {
+    type: String,
+    required: true,
+    enum: ["Add", "Withdraw"],
+    default: "Withdraw"
+  }
 });
 
 module.exports = mongoose.model("Transaction", TransactionSchema);
