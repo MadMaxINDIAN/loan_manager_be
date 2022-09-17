@@ -79,7 +79,6 @@ exports.fetchWithdrawAndAdd = async (req, res) => {
 }
 
 exports.fetchWithdrawAndAddByDate = async (req, res) => {
-    console.log(req.user)
     if (req.user.type !== 'admin') {
         res.status(401).json({ message: 'Not authorized' })
     }
