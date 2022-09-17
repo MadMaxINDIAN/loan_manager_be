@@ -13,12 +13,6 @@ const TransactionSchema = new mongoose.Schema({
   date: {
     type: Date,
     required: true,
-  },
-  type: {
-    type: String,
-    required: true,
-    enum: ["Add", "Withdraw"],
-    default: "Withdraw"
   }
 });
 

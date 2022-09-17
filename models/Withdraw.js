@@ -8,6 +8,12 @@ const WithdrawSchema = new mongoose.Schema({
     amount: {
         type: Number,
         default: 0
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: ["Add", "Withdraw"],
+      defaultValue: "Withdraw"
     }
 }, {
     timestamps: true
