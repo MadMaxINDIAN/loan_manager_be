@@ -71,7 +71,7 @@ exports.fetchWithdrawAndAdd = async (req, res) => {
                 },
             },
         ])
-        res.status(200).json({ message: 'Success', withdrawal: withdrawals[0].total || 0, investment: investments[0].total || 0 })
+        res.status(200).json({ message: 'Success', withdrawal: withdrawals[0]?.total || 0, investment: investments[0]?.total || 0 })
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: err?.message || 'Something went wrong' })
@@ -119,7 +119,7 @@ exports.fetchWithdrawAndAddByDate = async (req, res) => {
                 },
             },
         ])
-        res.status(200).json({ message: 'Success', withdrawal: withdrawals[0].total || 0, investment: investments[0].total || 0 })
+        res.status(200).json({ message: 'Success', withdrawal: withdrawals[0]?.total || 0, investment: investments[0]?.total || 0 })
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: err?.message || 'Something went wrong' })
