@@ -77,3 +77,51 @@ exports.fetchWithdrawAndAdd = async (req, res) => {
         res.status(500).json({ message: err?.message || 'Something went wrong' })
     }
 }
+
+exports.fetchWithdrawAndAddByDate = async (req, res) => {
+    console.log(req.user)
+    if (req.user.type !== 'admin') {
+        res.status(401).json({ message: 'Not authorized' })
+    }
+    try {
+        const { from_date, to_date } = req.body;
+        const lb = new Date(from_date.substring(0, 10));
+        const ub = new Date(to_date.substring(0, 10)).addDays(1);
+        const withdrawals = await Withdraw.aggregate([
+            {
+                $match: {
+                    $and: [
+                        { type: 'Withdraw' },
+                        { createdAt: { $gte: lb, $lt: ub } }
+                    ]
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$amount" },
+                },
+            },
+        ])
+        const investments = await Withdraw.aggregate([
+            {
+                $match: {
+                    $and: [
+                        { type: 'Add' },
+                        { createdAt: { $gte: lb, $lt: ub } }
+                    ]
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$amount" },
+                },
+            },
+        ])
+        res.status(200).json({ message: 'Success', withdrawal: withdrawals[0].total || 0, investment: investments[0].total || 0 })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: err?.message || 'Something went wrong' })
+    }
+}
