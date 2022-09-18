@@ -92,7 +92,7 @@ exports.fetchWithdrawAndAddByDate = async (req, res) => {
                 $match: {
                     $and: [
                         { type: 'Withdraw' },
-                        { createdAt: { $gte: lb, $lt: ub } }
+                        { date: { $gte: lb, $lt: ub } }
                     ]
                 }
             },
@@ -108,7 +108,7 @@ exports.fetchWithdrawAndAddByDate = async (req, res) => {
                 $match: {
                     $and: [
                         { type: 'Add' },
-                        { createdAt: { $gte: lb, $lt: ub } }
+                        { date: { $gte: lb, $lt: ub } }
                     ]
                 }
             },
