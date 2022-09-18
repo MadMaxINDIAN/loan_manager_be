@@ -136,27 +136,27 @@ exports.getBorrower = (req, res) => {
     });
 };
 
-exports.addLoansToBorrowers = async (req, res) => {
-  try {
-    //     const loans = await Loan.find()
-    //     loans.forEach(async (loan) => {
-    //       const borrower = await Borrower.findById(loan.borrower_id)
-    //       if (borrower.loans) {
-    //         const idx = borrower.loans.findIndex(l => l._id === loan._id)
-    //         if (idx === -1) {
-    //           borrower.loans.push(loan._id)
-    //           await borrower.save()
-    //         }
-    //       } else {
-    //         borrower.loans = []
-    //         borrower.loans.push(loan._id)
-    //         await borrower.save()
-    //       }
-    //     })
-    const borrower = await Borrower.find({ $or: [{ loans: null, loans: [] }] })
-    res.status(200).json({ message: 'Update successful ', borrower })
-  } catch (err) {
-    console.log(err)
-    res.status(500).json({ message: 'Something went wrong' })
-  }
-}
+// exports.addLoansToBorrowers = async (req, res) => {
+//   try {
+//     const loans = await Loan.find()
+//     loans.forEach(async (loan) => {
+//       const borrower = await Borrower.findById(loan.borrower_id)
+//       if (borrower.loans) {
+//         const idx = borrower.loans.findIndex(l => l._id === loan._id)
+//         if (idx === -1) {
+//           borrower.loans.push(loan._id)
+//           await borrower.save()
+//         }
+//       } else {
+//         borrower.loans = []
+//         borrower.loans.push(loan._id)
+//         await borrower.save()
+//       }
+//     })
+//     const borrower = await Borrower.find({ $or: [{ loans: null, loans: [] }] })
+//     res.status(200).json({ message: 'Update successful ', borrower })
+//   } catch (err) {
+//     console.log(err)
+//     res.status(500).json({ message: 'Something went wrong' })
+//   }
+// }
