@@ -125,3 +125,16 @@ exports.fetchWithdrawAndAddByDate = async (req, res) => {
         res.status(500).json({ message: err?.message || 'Something went wrong' })
     }
 }
+
+exports.deleteEntry = async (req, res) => {
+    if (req.user.type !== 'admin') {
+        res.status(401).json({ message: 'Not authorized' })
+    }
+    try {
+        const entry = await Withdraw.findByIdAndDelete(req.params.id)
+        res.status(200).json({ message: 'Entry deleted', entry })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: err.message || 'Something went wrong' })
+    }
+}
