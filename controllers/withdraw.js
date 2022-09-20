@@ -13,7 +13,7 @@ Date.prototype.subtractDays = function (days) {
 };
 
 exports.getDetailsWithdrawTransaction = async (req, res) => {
-    return res.json({ success: true, withdraw: (await Withdraw.find()).map(doc => ({ id: doc._id, date: doc.date, name: doc.name, amount: doc.amount, type: doc.type || "Withdraw" })) });
+    return res.json({ success: true, withdraw: (await Withdraw.find().sort({ date: 1 })).map(doc => ({ id: doc._id, date: doc.date, name: doc.name, amount: doc.amount, type: doc.type || "Withdraw" })) });
 }
 
 exports.addNewWithdrawTransaction = async (req, res) => {

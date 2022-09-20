@@ -142,7 +142,7 @@ exports.getBorrower = (req, res) => {
 //     loans.forEach(async (loan) => {
 //       const borrower = await Borrower.findById(loan.borrower_id)
 //       if (borrower.loans) {
-//         const idx = borrower.loans.findIndex(l => l._id === loan._id)
+//         const idx = borrower.loans.findIndex(l => l._id.toString() === loan._id.toString())
 //         if (idx === -1) {
 //           borrower.loans.push(loan._id)
 //           await borrower.save()
@@ -155,6 +155,26 @@ exports.getBorrower = (req, res) => {
 //     })
 //     const borrower = await Borrower.find({ $or: [{ loans: null, loans: [] }] })
 //     res.status(200).json({ message: 'Update successful ', borrower })
+//   } catch (err) {
+//     console.log(err)
+//     res.status(500).json({ message: 'Something went wrong' })
+//   }
+// }
+
+// exports.removeDuplicateArrays = async (req, res) => {
+//   try {
+//     const borrowers = await Borrower.find()
+//     borrowers.forEach(async (borrower) => {
+//       let newArr = new Set()
+//       newArr = borrower.loans.filter(loan => {
+//         const k = loan.toString()
+//         return newArr.has(k) ? false : newArr.add(k)
+//       })
+//       newArr = Array.from(newArr)
+//       borrower.loans = newArr
+//       await borrower.save()
+//     })
+//     res.status(200).json({ message: 'Success' })
 //   } catch (err) {
 //     console.log(err)
 //     res.status(500).json({ message: 'Something went wrong' })

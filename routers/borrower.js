@@ -95,4 +95,6 @@ router.get(
 
 // router.post('/addLoans', borrowerController.addLoansToBorrowers)
 
+// router.post('/removeDuplicates', borrowerController.removeDuplicateArrays)
+
 module.exports = router;
