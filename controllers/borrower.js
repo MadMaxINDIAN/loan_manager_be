@@ -79,20 +79,18 @@ exports.updateBorrower = async (req, res) => {
 exports.getBorrowers = async (req, res) => {
   const name = req.query.search;
   if (!isNaN(name)) {
-    Borrower.find()
+    const loan = await Loan.find({ sr_no: name })
+    Borrower.findById(loan[0].borrower_id)
       .populate({
         path: 'loans', match: {
           $and: [
             { status: { $eq: 'active' } },
-            { sr_no: { $eq: name } }
           ]
         }
       })
-      .then(borrowers => {
-        return borrowers.filter(b => b.loans !== null && b.loans.length !== 0)
-      })
-      .then(borrowers => {
-        return res.status(200).json({ message: 'Borrowers fetched successfully', borrowers: borrowers.slice(0, 10) })
+      .then(borrower => {
+        const borrowers = [borrower]
+        return res.status(200).json({ message: 'Borrowers fetched successfully', borrowers: borrowers })
       }).catch((err) => {
         return res.status(500).json({
           message:
