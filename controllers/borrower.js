@@ -80,6 +80,12 @@ exports.getBorrowers = async (req, res) => {
   const name = req.query.search;
   if (!isNaN(name)) {
     const loan = await Loan.find({ sr_no: name })
+    if (loan.length === 0) {
+      return res.status(404).json({
+        success: false,
+        errorMessage: "Loan not found"
+      })
+    }
     Borrower.findById(loan[0].borrower_id)
       .populate({
         path: 'loans', match: {
