@@ -83,7 +83,7 @@ exports.getBorrowers = async (req, res) => {
     if (loan.length === 0) {
       return res.status(404).json({
         success: false,
-        errorMessage: "Loan not found"
+        message: "Loan not found"
       })
     }
     Borrower.findById(loan[0].borrower_id)
