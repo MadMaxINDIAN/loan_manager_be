@@ -47,7 +47,7 @@ exports.addNewWithdrawTransaction = async (req, res) => {
 
 exports.fetchWithdrawAndAdd = async (req, res) => {
     if (req.user.type !== 'admin') {
-        res.status(401).json({ message: 'Not authorized' })
+        return res.status(401).json({ message: 'Not authorized' })
     }
     try {
         const withdrawals = await Withdraw.aggregate([
@@ -81,7 +81,7 @@ exports.fetchWithdrawAndAdd = async (req, res) => {
 
 exports.fetchWithdrawAndAddByDate = async (req, res) => {
     if (req.user.type !== 'admin') {
-        res.status(401).json({ message: 'Not authorized' })
+        return res.status(401).json({ message: 'Not authorized' })
     }
     try {
         const { from_date, to_date } = req.body;
@@ -128,7 +128,7 @@ exports.fetchWithdrawAndAddByDate = async (req, res) => {
 
 exports.deleteEntry = async (req, res) => {
     if (req.user.type !== 'admin') {
-        res.status(401).json({ message: 'Not authorized' })
+        return res.status(401).json({ message: 'Not authorized' })
     }
     try {
         const entry = await Withdraw.findByIdAndDelete(req.params.id)
