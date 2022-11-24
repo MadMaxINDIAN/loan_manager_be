@@ -12,7 +12,7 @@ const WithdrawSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        enum: ["Add", "Withdraw"],
+        enum: ["Add", "Withdraw", "Expense"],
         defaultValue: "Withdraw"
     },
     date: {

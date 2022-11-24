@@ -17,7 +17,6 @@ exports.getDetailsWithdrawTransaction = async (req, res) => {
 }
 
 exports.addNewWithdrawTransaction = async (req, res) => {
-    console.log(req.body)
     if (req.user.type !== "admin") {
         return res.status(401).json({
             message: "Not authorised"
@@ -72,7 +71,18 @@ exports.fetchWithdrawAndAdd = async (req, res) => {
                 },
             },
         ])
-        res.status(200).json({ message: 'Success', withdrawal: withdrawals[0]?.total || 0, investment: investments[0]?.total || 0 })
+        const expenses = await Withdraw.aggregate([
+            {
+                $match: { type: 'Expense' }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$amount" },
+                },
+            },
+        ])
+        res.status(200).json({ message: 'Success', withdrawal: withdrawals[0]?.total || 0, investment: investments[0]?.total || 0, expense: expenses[0]?.total || 0 })
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: err?.message || 'Something went wrong' })
@@ -119,7 +129,23 @@ exports.fetchWithdrawAndAddByDate = async (req, res) => {
                 },
             },
         ])
-        res.status(200).json({ message: 'Success', withdrawal: withdrawals[0]?.total || 0, investment: investments[0]?.total || 0 })
+        const expenses = await Withdraw.aggregate([
+            {
+                $match: {
+                    $and: [
+                        { type: 'Expense' },
+                        { date: { $gte: lb, $lt: ub } }
+                    ]
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$amount" },
+                },
+            },
+        ])
+        res.status(200).json({ message: 'Success', withdrawal: withdrawals[0]?.total || 0, investment: investments[0]?.total || 0, expense: expenses[0]?.total || 0 })
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: err?.message || 'Something went wrong' })
